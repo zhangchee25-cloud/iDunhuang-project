@@ -1,5 +1,6 @@
 import { lazy, Suspense, useMemo, useRef, useState, type RefObject } from 'react'
 import { byId, conversations, exhibits, type ExhibitId } from './data'
+import { Entrance } from './Homepage'
 
 const ScrollScene = lazy(() => import('./ScrollScene').then((module) => ({ default: module.ScrollScene })))
 
@@ -132,11 +133,27 @@ function ConversationSection({ selected, onSelect }: { selected: ExhibitId; onSe
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitId>('diamond')
+  const [entered, setEntered] = useState(() => window.location.hash.length > 1)
+
+  const enterExhibition = (target = 'top') => {
+    setEntered(true)
+    window.requestAnimationFrame(() => {
+      const destination = document.getElementById(target)
+      if (target === 'top') window.scrollTo({ top: 0, behavior: 'instant' })
+      else destination?.scrollIntoView({ behavior: 'instant', block: 'start' })
+      if (destination) {
+        destination.setAttribute('tabindex', '-1')
+        destination.focus({ preventScroll: true })
+      }
+    })
+  }
 
   const openDialogue = (id: ExhibitId) => {
     setSelectedExhibit(id)
     document.getElementById('dialogue')?.scrollIntoView({ behavior: 'smooth' })
   }
+
+  if (!entered) return <Entrance onEnter={enterExhibition} />
 
   return (
     <>
@@ -153,7 +170,7 @@ function App() {
         </div>
       </header>
 
-      <main id="top">
+      <main id="top" tabIndex={-1}>
         <section className="hero">
           <div className="hero-grain" aria-hidden="true" />
           <div className="page-width hero-grid">
