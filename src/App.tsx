@@ -2,6 +2,7 @@ import { lazy, Suspense, useMemo, useRef, useState, type RefObject } from 'react
 import { byId, conversations, exhibits, type ExhibitId } from './data'
 import { Entrance } from './Homepage'
 import { PuzzleIntro } from './puzzle/components/PuzzleIntro'
+import DesktopPage from './puzzle/pages/DesktopPage'
 
 const ScrollScene = lazy(() => import('./ScrollScene').then((module) => ({ default: module.ScrollScene })))
 
@@ -135,7 +136,7 @@ function App() {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitId>('diamond')
   const [entered, setEntered] = useState(() => window.location.hash.length > 1)
-  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro'>('idle')
+  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro' | 'desktop'>('idle')
 
   const enterExhibition = (target = 'top') => {
     setEntered(true)
@@ -160,7 +161,9 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
-  if (puzzleStage === 'intro') return <PuzzleIntro onEnter={() => setPuzzleStage('idle')} />
+  if (puzzleStage === 'intro') return <PuzzleIntro onEnter={() => setPuzzleStage('desktop')} />
+
+  if (puzzleStage === 'desktop') return <DesktopPage onBack={() => setPuzzleStage('idle')} />
 
   if (!entered) return <Entrance onEnter={enterExhibition} />
 

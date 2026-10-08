@@ -1,0 +1,240 @@
+.tmail-page {
+  position: fixed;
+  inset: 0;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #1b2730;
+  background: #eef2f4;
+}
+.tmail-topbar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  background: #17313d;
+  color: #eef2f4;
+}
+.tmail-title {
+  margin: 0 auto;
+  font-size: 15px;
+  letter-spacing: .06em;
+}
+.tmail-avatar,
+.tmail-logout,
+.tmail-back {
+  border: 0;
+  background: transparent;
+  color: #d6ad6d;
+  font-size: 13px;
+}
+.tmail-login {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.tmail-login-card {
+  width: min(360px, 100%);
+  padding: 30px 28px;
+  border: 1px solid rgba(214, 173, 109, .3);
+  background: #fff;
+  box-shadow: 0 16px 50px rgba(23, 49, 61, .12);
+}
+.tmail-login-logo {
+  font-size: 38px;
+  text-align: center;
+}
+.tmail-login-card h1 {
+  margin: 12px 0 4px;
+  font-size: 24px;
+  text-align: center;
+}
+.tmail-login-hint {
+  margin: 0 0 22px;
+  color: #7b878b;
+  font-size: 13px;
+  text-align: center;
+}
+.tmail-login-card label {
+  display: block;
+  margin: 0 0 14px;
+}
+.tmail-login-card label span {
+  display: block;
+  margin-bottom: 6px;
+  color: #56646b;
+  font-size: 12px;
+}
+.tmail-login-card input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #c8d0d4;
+  border-radius: 4px;
+  outline: none;
+}
+.tmail-login-card input:focus {
+  border-color: #d6ad6d;
+}
+.tmail-error {
+  color: #c0392b;
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+.tmail-login-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px;
+  border: 0;
+  background: #17313d;
+  color: #fff;
+  font-size: 14px;
+}
+.tmail-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+.tmail-inbox {
+  overflow-y: auto;
+  border-right: 1px solid rgba(23, 49, 61, .1);
+  background: #f7f8f9;
+}
+.tmail-inbox-title {
+  padding: 16px 18px 10px;
+  color: #7b878b;
+  font-size: 12px;
+  letter-spacing: .1em;
+}
+.tmail-mail-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  border: 0;
+  border-bottom: 1px solid rgba(23, 49, 61, .08);
+  background: transparent;
+  text-align: left;
+}
+.tmail-mail-item:hover,
+.tmail-mail-item.is-active {
+  background: rgba(214, 173, 109, .12);
+}
+.tmail-mail-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d6ad6d;
+  flex: 0 0 auto;
+}
+.tmail-mail-main {
+  min-width: 0;
+}
+.tmail-mail-main strong {
+  display: block;
+  font-size: 13px;
+}
+.tmail-mail-main small {
+  display: block;
+  margin-top: 3px;
+  color: #7b878b;
+  font-size: 12px;
+}
+.tmail-reader {
+  overflow-y: auto;
+  background: #fff;
+}
+.tmail-empty {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #9aa4a8;
+  font-size: 14px;
+}
+.tmail-mail {
+  padding: 26px 30px 40px;
+  max-width: 720px;
+}
+.tmail-mail-head h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+.tmail-mail-head span {
+  color: #7b878b;
+  font-size: 13px;
+}
+.tmail-mail-body {
+  margin-top: 22px;
+  line-height: 1.9;
+  font-size: 14px;
+}
+.tmail-search-link {
+  margin-top: 24px;
+  padding: 10px 16px;
+  border: 1px solid #d6ad6d;
+  background: #fff;
+  color: #a4553d;
+  font-size: 13px;
+}
+.tmail-password-box {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border: 1px dashed #d6ad6d;
+  background: #fdf8ef;
+  font-size: 13px;
+}
+.tmail-password-box span {
+  display: block;
+  color: #7b878b;
+  margin-bottom: 6px;
+}
+.tmail-password-box code {
+  font-size: 18px;
+  letter-spacing: .12em;
+  color: #a4553d;
+}
+.tmail-attachment {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #c8d0d4;
+  background: #f7f8f9;
+  color: #56646b;
+  font-size: 13px;
+}
+.tmail-attachment-mark {
+  font-size: 18px;
+}
+.tmail-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(140, 0, 0, .84);
+  color: #fff;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-align: center;
+  animation: tmailFlash .16s ease both;
+}
+@keyframes tmailFlash {
+  from { opacity: 0; transform: scale(1.05); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 620px) {
+  .tmail-layout {
+    grid-template-columns: 150px 1fr;
+  }
+  .tmail-mail {
+    padding: 20px 18px 32px;
+  }
+}

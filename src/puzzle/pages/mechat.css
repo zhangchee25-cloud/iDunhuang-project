@@ -65,6 +65,7 @@
 }
 .mechat-session.is-locked {
   color: #8c9699;
+  cursor: default;
 }
 .mechat-session-avatar {
   width: 36px;
@@ -79,6 +80,9 @@
 .mechat-session.is-locked .mechat-session-avatar {
   background: #d9d3c6;
   color: #6f797c;
+}
+.mechat-session.is-locked .mechat-session-name {
+  color: #8c9699;
 }
 .mechat-session-name {
   font-size: 14px;

@@ -4,6 +4,11 @@ import { GAME_TEXT } from '../data/gameText'
 import { gameStore } from '../stores/gameStore'
 import './mechat.css'
 
+const FILE_NAME_OVERRIDES: Record<string, string> = {
+  '《大物作业2》': '大物作业2',
+  '《电电学习秘诀》': 'glgg的随手推秘诀',
+}
+
 const isPinduoduoLink = (message: ChatMessage) => message.type === 'link' && message.linkUrl === '#safeBox'
 
 function Message({ message, onSafeLink }: { message: ChatMessage; onSafeLink: () => void }) {
@@ -35,7 +40,7 @@ function Message({ message, onSafeLink }: { message: ChatMessage; onSafeLink: ()
         <div className="mechat-file">
           <span className="mechat-file-mark" aria-hidden="true">📄</span>
           <span>
-            <strong>{message.content}</strong>
+            <strong>{FILE_NAME_OVERRIDES[message.content] ?? message.content}</strong>
             <small>文件</small>
           </span>
         </div>

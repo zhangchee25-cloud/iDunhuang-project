@@ -147,6 +147,14 @@
   color: #263746;
   font: 15px/1.8 "PingFang SC", "Microsoft YaHei", sans-serif;
 }
+.desktop-app-entry {
+  flex: 1;
+  border: 0;
+  background: #fbf7ee;
+  color: #263746;
+  font-size: 14px;
+  letter-spacing: .04em;
+}
 .desktop-locked {
   flex: 1;
   display: flex;
