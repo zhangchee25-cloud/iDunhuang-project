@@ -35,6 +35,14 @@ img { max-width: 100%; display: block; }
 .site-header nav a:hover, .site-header nav a:focus-visible { color: var(--gold); }
 .header-edition { color: #aa9c87; font-size: 11px; letter-spacing: .08em; padding-left: 26px; border-left: 1px solid rgba(234, 213, 175, .2); white-space: nowrap; }
 
+.header-actions { display: flex; align-items: center; gap: 18px; }
+.header-wechat { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(85, 198, 107, .5); background: rgba(85, 198, 107, .1); color: #d3f5db; padding: 9px 13px; font-size: 12px; letter-spacing: .06em; white-space: nowrap; transition: background .2s, border-color .2s; }
+.header-wechat:hover, .header-wechat:focus-visible { background: rgba(85, 198, 107, .18); border-color: rgba(85, 198, 107, .8); color: #eafff0; }
+.header-wechat-dot { width: 8px; height: 8px; border-radius: 50%; background: #55c66b; box-shadow: 0 0 0 3px rgba(85, 198, 107, .18); }
+.header-wechat-badge { min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px; background: #e04b4b; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 700; }
+@media (max-width: 1100px) { .header-edition { display: none; } .header-wechat { padding: 8px 11px; } }
+@media (max-width: 620px) { .header-wechat { font-size: 11px; padding: 8px 10px; } }
+
 .hero { position: relative; overflow: hidden; color: #f5eee2; background: radial-gradient(circle at 73% 42%, #324457 0, #182b3a 31%, #0d1b28 75%); }
 .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12, 22, 31, .25), transparent 58%), radial-gradient(circle at 7% 100%, rgba(168, 93, 58, .2), transparent 35%); pointer-events: none; }
 .hero-grain { position: absolute; inset: 0; opacity: .09; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }

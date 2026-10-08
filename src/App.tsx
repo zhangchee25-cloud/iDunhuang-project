@@ -1,6 +1,7 @@
 import { lazy, Suspense, useMemo, useRef, useState, type RefObject } from 'react'
 import { byId, conversations, exhibits, type ExhibitId } from './data'
 import { Entrance } from './Homepage'
+import { PuzzleIntro } from './puzzle/components/PuzzleIntro'
 
 const ScrollScene = lazy(() => import('./ScrollScene').then((module) => ({ default: module.ScrollScene })))
 
@@ -134,6 +135,7 @@ function App() {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitId>('diamond')
   const [entered, setEntered] = useState(() => window.location.hash.length > 1)
+  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro'>('idle')
 
   const enterExhibition = (target = 'top') => {
     setEntered(true)
@@ -153,6 +155,13 @@ function App() {
     document.getElementById('dialogue')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const openPuzzle = () => {
+    setPuzzleStage('intro')
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }
+
+  if (puzzleStage === 'intro') return <PuzzleIntro onEnter={() => setPuzzleStage('idle')} />
+
   if (!entered) return <Entrance onEnter={enterExhibition} />
 
   return (
@@ -166,7 +175,14 @@ function App() {
             <a href="#dialogue">与文物对话</a>
             <a href="#sources">资料来源</a>
           </nav>
-          <span className="header-edition">数字文化遗产 · 2026</span>
+          <div className="header-actions">
+            <span className="header-edition">数字文化遗产 · 2026</span>
+            <button className="header-wechat" type="button" onClick={openPuzzle}>
+              <span className="header-wechat-dot" aria-hidden="true" />
+              微信新消息
+              <span className="header-wechat-badge" aria-hidden="true">1</span>
+            </button>
+          </div>
         </div>
       </header>
 
