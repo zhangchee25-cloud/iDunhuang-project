@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PUZZLE_ANSWER } from '../data/puzzleAnswer'
 import { MAIL_DATA } from '../data/mailData'
 import { GAME_TEXT } from '../data/gameText'
-import { extractUppercase } from '../utils/textTools'
 import { gameStore } from '../stores/gameStore'
 import SearchPage from './SearchPage'
 import './tmail.css'
@@ -15,23 +14,30 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(() => gameStore.get().hasMail2)
   const [activeMail, setActiveMail] = useState<MailId | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [flash, setFlash] = useState('')
+  const [mailVersion, setMailVersion] = useState(0)
 
   const state = gameStore.get()
 
-  const unlockedMails = useMemo<MailId[]>(() => {
-    const list: MailId[] = ['mail1']
-    if (state.hasMail2) list.push('mail2')
-    if (state.hasMail3) list.push('mail3')
-    return list
-  }, [state.hasMail2, state.hasMail3])
+  const unlockedMails: MailId[] = ['mail1']
+  if (state.hasMail2) unlockedMails.push('mail2')
+  if (state.hasMail3) unlockedMails.push('mail3')
+
+  useEffect(() => {
+    const handle = () => setMailVersion((value) => value + 1)
+    window.addEventListener('puzzle-mail-refresh', handle)
+    return () => window.removeEventListener('puzzle-mail-refresh', handle)
+  }, [])
+
+  void mailVersion
 
   const login = () => {
     if (account.trim().toLowerCase() === PUZZLE_ANSWER.wuliuMailAccount.toLowerCase() && password === PUZZLE_ANSWER.wuliuMailPwd) {
       setError('')
+      gameStore.set({ hasMail2: true })
       setLoggedIn(true)
     } else {
       setError('账号或密码错误')
@@ -46,6 +52,14 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
   const openSearch = () => {
     setSearchOpen(true)
     setActiveMail(null)
+  }
+
+  const handleSolved = () => {
+    gameStore.set({ hasMail2: true })
+    setSearchOpen(false)
+    setActiveMail(null)
+    setMailVersion((value) => value + 1)
+    showFlash(GAME_TEXT.redAlertStage2)
   }
 
   const showFlash = (text: string) => {
@@ -83,7 +97,7 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
   }
 
   if (searchOpen) {
-    return <SearchPage onBack={() => { setSearchOpen(false); setActiveMail(null) }} onSolved={() => showFlash(GAME_TEXT.redAlertStage2)} />
+    return <SearchPage onBack={() => { setSearchOpen(false); setActiveMail(null) }} onSolved={handleSolved} />
   }
 
   const active = activeMail ? META[activeMail] : null
@@ -118,12 +132,6 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
               <div className="tmail-mail-body" dangerouslySetInnerHTML={{ __html: active.content.replace(/\n/g, '<br />') }} />
               {activeMail === 'mail1' && (
                 <button className="tmail-search-link" type="button" onClick={openSearch}>检索页面 ↗</button>
-              )}
-              {activeMail === 'mail2' && (
-                <div className="tmail-password-box">
-                  <span>邮件中的英文大写字母组成</span>
-                  <code>{extractUppercase(active.content).toLowerCase()}</code>
-                </div>
               )}
               {activeMail === 'mail3' && (
                 <button className="tmail-attachment" type="button" aria-label="附件">

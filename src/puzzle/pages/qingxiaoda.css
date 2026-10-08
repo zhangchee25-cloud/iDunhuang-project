@@ -1,0 +1,179 @@
+.qingxiaoda-page {
+  position: fixed;
+  inset: 0;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #1b2730;
+  background: #eef2f4;
+}
+.qingxiaoda-topbar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  background: #17313d;
+  color: #eef2f4;
+}
+.qingxiaoda-title {
+  margin: 0 auto;
+  font-size: 15px;
+  letter-spacing: .06em;
+}
+.qingxiaoda-back {
+  border: 0;
+  background: transparent;
+  color: #d6ad6d;
+  font-size: 13px;
+}
+.qingxiaoda-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .12);
+  font-size: 18px;
+}
+.qingxiaoda-login {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.qingxiaoda-login-card {
+  width: min(360px, 100%);
+  padding: 30px 28px;
+  border: 1px solid rgba(214, 173, 109, .3);
+  background: #fff;
+  box-shadow: 0 16px 50px rgba(23, 49, 61, .12);
+}
+.qingxiaoda-login-logo {
+  font-size: 42px;
+  text-align: center;
+}
+.qingxiaoda-login-card h1 {
+  margin: 10px 0 4px;
+  font-size: 24px;
+  text-align: center;
+}
+.qingxiaoda-hint,
+.qingxiaoda-permit-hint {
+  margin: 0 0 20px;
+  color: #7b878b;
+  font-size: 13px;
+  text-align: center;
+}
+.qingxiaoda-permit-hint {
+  color: #a4553d;
+}
+.qingxiaoda-login-card label {
+  display: block;
+  margin: 0 0 14px;
+}
+.qingxiaoda-login-card label span {
+  display: block;
+  margin-bottom: 6px;
+  color: #56646b;
+  font-size: 12px;
+}
+.qingxiaoda-login-card input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #c8d0d4;
+  border-radius: 4px;
+  outline: none;
+}
+.qingxiaoda-login-card input:focus {
+  border-color: #d6ad6d;
+}
+.qingxiaoda-error {
+  color: #c0392b;
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+.qingxiaoda-login-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px;
+  border: 0;
+  background: #17313d;
+  color: #fff;
+  font-size: 14px;
+}
+.qingxiaoda-chat {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.qingxiaoda-chat-head {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(23, 49, 61, .1);
+  background: #fff;
+  font-size: 14px;
+}
+.qingxiaoda-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px;
+  background: #f7f8f9;
+}
+.qingxiaoda-message {
+  max-width: 76%;
+  margin: 0 0 16px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid rgba(23, 49, 61, .1);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.qingxiaoda-message.bot {
+  background: #fff;
+}
+.qingxiaoda-message.user {
+  margin-left: auto;
+  background: #d8ecd8;
+  border-color: rgba(76, 160, 75, .25);
+}
+.qingxiaoda-candidates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 18px;
+  border-top: 1px solid rgba(23, 49, 61, .1);
+  background: #fff;
+}
+.qingxiaoda-candidates button {
+  padding: 10px 14px;
+  border: 1px solid #d6ad6d;
+  border-radius: 20px;
+  background: #fff;
+  color: #a4553d;
+  font-size: 13px;
+}
+.qingxiaoda-candidates button:hover {
+  background: rgba(214, 173, 109, .12);
+}
+.hide-text {
+  color: transparent;
+  background: transparent;
+  user-select: text;
+}
+.hide-text::selection {
+  color: #a4553d;
+  background: #d6ad6d;
+}
+@media (max-width: 620px) {
+  .qingxiaoda-message {
+    max-width: 92%;
+  }
+}

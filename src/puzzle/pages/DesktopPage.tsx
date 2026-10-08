@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { gameStore } from '../stores/gameStore'
 import MeChatPage from './MeChatPage'
 import TMailPage from './TMailPage'
+import QingXiaoDaPage from './QingXiaoDaPage'
 import '../styles/desktop.css'
 
 type AppId = 'mechat' | 'tmail' | 'qingxiaoda' | 'notepad'
@@ -36,6 +37,7 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
   const [note, setNote] = useState('')
   const [mechatOpen, setMechatOpen] = useState(false)
   const [tmailOpen, setTmailOpen] = useState(false)
+  const [qingxiaodaOpen, setQingXiaoDaOpen] = useState(false)
   const zCounter = useRef(10)
   const dragRef = useRef<{ id: AppId; offsetX: number; offsetY: number } | null>(null)
   const desktopRef = useRef<HTMLDivElement>(null)
@@ -97,6 +99,8 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
 
   if (tmailOpen) return <TMailPage onBack={() => setTmailOpen(false)} />
 
+  if (qingxiaodaOpen) return <QingXiaoDaPage onBack={() => setQingXiaoDaOpen(false)} />
+
   return (
     <div className="desktop-page" ref={desktopRef}>
       <div className="desktop-topbar">
@@ -147,6 +151,8 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
                 <button className="desktop-app-entry" type="button" onClick={() => setMechatOpen(true)}>打开 MeChat</button>
               ) : win.id === 'tmail' ? (
                 <button className="desktop-app-entry" type="button" onClick={() => setTmailOpen(true)}>打开 TMail</button>
+              ) : win.id === 'qingxiaoda' ? (
+                <button className="desktop-app-entry" type="button" onClick={() => setQingXiaoDaOpen(true)}>打开 青小搭</button>
               ) : win.id === 'notepad' ? (
                 <textarea
                   className="desktop-notepad"
