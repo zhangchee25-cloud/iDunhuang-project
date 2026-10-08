@@ -46,7 +46,7 @@ export default function SearchPage({ onBack, onSolved }: { onBack: () => void; o
         <h1>敦煌资料检索</h1>
         <p>输入关键词，检索相关词条。</p>
         <form className="search-form" onSubmit={(event) => { event.preventDefault(); submit() }}>
-          <input type="text" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索：伦敦 / 英国图书馆 / The Diamond Sutra" />
+          <input type="text" value={query} onChange={(event) => setQuery(event.target.value)} />
           <button type="submit">检索</button>
         </form>
         {result && (
