@@ -53,8 +53,18 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     const onHash = () => {
       const hash = window.location.hash
-      if (hash === "#safeBox") setSafeBoxOpen(true)
-      if (hash === "#disk") setDiskOpen(true)
+      if (hash === "#safeBox") {
+        setSafeBoxOpen(true)
+        setDiskOpen(false)
+      }
+      if (hash === "#disk") {
+        setDiskOpen(true)
+        setSafeBoxOpen(false)
+      }
+      if (hash === "") {
+        setSafeBoxOpen(false)
+        setDiskOpen(false)
+      }
     }
     onHash()
     window.addEventListener("hashchange", onHash)
