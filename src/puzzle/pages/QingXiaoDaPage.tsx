@@ -27,8 +27,10 @@ type Phase = "login" | "chat" | "france"
 
 export default function QingXiaoDaPage({ onBack }: { onBack: () => void }) {
   const initPhase = (): Phase => {
+    const s = gameStore.get()
     if (localStorage.getItem(XIAODA_FR_KEY)) return "france"
-    if (localStorage.getItem(XIAODA_UK_KEY)) return "chat"
+    if (s.hasMail3) return "login"
+    if (s.hasMail2) return "chat"
     return "login"
   }
   const [phase, setPhase] = useState<Phase>(initPhase)
@@ -51,20 +53,26 @@ export default function QingXiaoDaPage({ onBack }: { onBack: () => void }) {
     return () => { if (permitTimer.current) clearTimeout(permitTimer.current) }
   }, [])
 
+  const { lat, lng } = PUZZLE_ANSWER.franceIdpLngLat
+  const latStr = String(lat)
+  const lngStr = String(lng)
+
   const login = () => {
-    const canPermit = gameStore.get().canOpenSafeLink
+    const s = gameStore.get()
+    const canPermit = s.canOpenSafeLink && s.hasMail3
     if (canPermit) {
-      const value = password.trim()
+      const a = account.trim()
+      const p = password.trim()
       if (
-        (value === `${PUZZLE_ANSWER.franceIdpLngLat.lat},${PUZZLE_ANSWER.franceIdpLngLat.lng}`) ||
-        (value === `${PUZZLE_ANSWER.franceIdpLngLat.lng},${PUZZLE_ANSWER.franceIdpLngLat.lat}`)
+        (a === latStr && p === lngStr) ||
+        (a === lngStr && p === latStr)
       ) {
         setError("")
         localStorage.setItem(XIAODA_FR_KEY, "1")
         setPhase("france")
         return
       }
-      setError("密码错误")
+      setError("账号或密码错误")
       return
     }
     const normalized = password.trim().toLowerCase()
@@ -114,7 +122,8 @@ export default function QingXiaoDaPage({ onBack }: { onBack: () => void }) {
     }
   }
 
-  const needPermit = gameStore.get().canOpenSafeLink
+  const s = gameStore.get()
+  const needPermit = s.canOpenSafeLink && s.hasMail3
 
   return (
     <div className="qingxiaoda-page">
@@ -133,7 +142,7 @@ export default function QingXiaoDaPage({ onBack }: { onBack: () => void }) {
             {needPermit && (
               <label>
                 <span>账号</span>
-                <input type="text" value={account} onChange={(event) => setAccount(event.target.value)} placeholder="账号" />
+                <input type="text" value={account} onChange={(event) => setAccount(event.target.value)} placeholder="数字 + 小数点" />
               </label>
             )}
             <label>
@@ -155,11 +164,13 @@ export default function QingXiaoDaPage({ onBack }: { onBack: () => void }) {
               <div key={index} className={`qingxiaoda-message ${message.role}`} dangerouslySetInnerHTML={{ __html: message.html }} />
             ))}
           </div>
-          <div className="qingxiaoda-candidates">
-            {candidates.map((name) => (
-              <button key={name} type="button" onClick={() => clickCandidate(name)}>{name}</button>
-            ))}
-          </div>
+          {phase !== "france" && (
+            <div className="qingxiaoda-candidates">
+              {candidates.map((name) => (
+                <button key={name} type="button" onClick={() => clickCandidate(name)}>{name}</button>
+              ))}
+            </div>
+          )}
           {phase === "france" && (
             <div className="qingxiaoda-france-input">
               <input type="text" value={franceInput} onChange={(event) => setFranceInput(event.target.value)} placeholder="问我文物名称" />

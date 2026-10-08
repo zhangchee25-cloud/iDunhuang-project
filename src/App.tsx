@@ -1,8 +1,9 @@
-import { lazy, Suspense, useMemo, useRef, useState, type RefObject } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { byId, conversations, exhibits, type ExhibitId } from './data'
 import { Entrance } from './Homepage'
 import { PuzzleIntro } from './puzzle/components/PuzzleIntro'
 import DesktopPage from './puzzle/pages/DesktopPage'
+import EndingPage from './puzzle/pages/EndingPage'
 
 const ScrollScene = lazy(() => import('./ScrollScene').then((module) => ({ default: module.ScrollScene })))
 
@@ -136,7 +137,24 @@ function App() {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [selectedExhibit, setSelectedExhibit] = useState<ExhibitId>('diamond')
   const [entered, setEntered] = useState(() => window.location.hash.length > 1)
-  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro' | 'desktop'>('idle')
+  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro' | 'desktop' | 'ending'>('idle')
+
+  useEffect(() => {
+    const onHash = () => {
+      const hash = window.location.hash
+      if (hash === '#ending') {
+        setPuzzleStage('ending')
+        window.scrollTo({ top: 0, behavior: 'instant' })
+      }
+      if (hash === '#puzzle') {
+        setPuzzleStage('intro')
+        window.scrollTo({ top: 0, behavior: 'instant' })
+      }
+    }
+    onHash()
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   const enterExhibition = (target = 'top') => {
     setEntered(true)
@@ -164,6 +182,8 @@ function App() {
   if (puzzleStage === 'intro') return <PuzzleIntro onEnter={() => setPuzzleStage('desktop')} />
 
   if (puzzleStage === 'desktop') return <DesktopPage onBack={() => setPuzzleStage('idle')} />
+
+  if (puzzleStage === 'ending') return <EndingPage onHome={() => setPuzzleStage('idle')} />
 
   if (!entered) return <Entrance onEnter={enterExhibition} />
 
@@ -268,3 +288,10 @@ function App() {
 }
 
 export default App
+
+
+
+
+
+
+
