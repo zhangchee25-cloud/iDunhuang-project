@@ -49,9 +49,13 @@ export function PuzzleIntro({ onEnter }: { onEnter: () => void }) {
     if (typingLine < NARRATION_LINES.length - 1) {
       setTypingLine((line) => line + 1)
       setVisibleCount((count) => count + 1)
-    } else {
-      onEnter()
+      return
     }
+    if (typed.length < NARRATION_LINES[typingLine].length) {
+      setTyped(NARRATION_LINES[typingLine])
+      return
+    }
+    onEnter()
   }
 
   return (
@@ -87,8 +91,10 @@ export function PuzzleIntro({ onEnter }: { onEnter: () => void }) {
                 </p>
               )
             })}
-            {visibleCount < NARRATION_LINES.length && (
-              <button className="puzzle-narration-next" type="button" onClick={nextLine}>继续 <span aria-hidden="true">↓</span></button>
+            {(
+              <button className="puzzle-narration-next" type="button" onClick={nextLine}>
+                {typingLine < NARRATION_LINES.length - 1 ? '继续' : typed.length < NARRATION_LINES[typingLine].length ? '跳过' : '进入桌面'} <span aria-hidden="true">↓</span>
+              </button>
             )}
           </div>
         </div>
