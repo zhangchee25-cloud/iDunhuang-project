@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { gameStore } from '../stores/gameStore'
+import MeChatPage from './MeChatPage'
 import '../styles/desktop.css'
 
 type AppId = 'mechat' | 'tmail' | 'qingxiaoda' | 'notepad'
@@ -32,6 +33,7 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
   const [windows, setWindows] = useState<WindowMeta[]>([])
   const [activeId, setActiveId] = useState<AppId | null>(null)
   const [note, setNote] = useState('')
+  const [mechatOpen, setMechatOpen] = useState(false)
   const zCounter = useRef(10)
   const dragRef = useRef<{ id: AppId; offsetX: number; offsetY: number } | null>(null)
   const desktopRef = useRef<HTMLDivElement>(null)
@@ -89,6 +91,8 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
     gameStore.set({ noteContent: value })
   }
 
+  if (mechatOpen) return <MeChatPage onBack={() => setMechatOpen(false)} />
+
   return (
     <div className="desktop-page" ref={desktopRef}>
       <div className="desktop-topbar">
@@ -135,7 +139,9 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
               </span>
             </header>
             <div className="desktop-window-body">
-              {win.id === 'notepad' ? (
+              {win.id === 'mechat' ? (
+                <button className="desktop-app-entry" type="button" onClick={() => setMechatOpen(true)}>打开 MeChat</button>
+              ) : win.id === 'notepad' ? (
                 <textarea
                   className="desktop-notepad"
                   value={note}

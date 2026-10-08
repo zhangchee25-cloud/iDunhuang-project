@@ -1,0 +1,211 @@
+.mechat-page {
+  position: fixed;
+  inset: 0;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #1b2730;
+  background: #e9e4d9;
+}
+.mechat-topbar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  background: #172a35;
+  color: #f0e4cf;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+}
+.mechat-title {
+  margin: 0 auto;
+  font-size: 15px;
+  letter-spacing: .06em;
+}
+.mechat-avatar {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .12);
+  font-size: 12px;
+}
+.mechat-back {
+  border: 0;
+  background: transparent;
+  color: #d6ad6d;
+  font-size: 13px;
+}
+.mechat-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+}
+.mechat-sessions {
+  overflow-y: auto;
+  border-right: 1px solid rgba(23, 42, 53, .12);
+  background: #f4efe5;
+}
+.mechat-session {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 16px;
+  border: 0;
+  border-bottom: 1px solid rgba(23, 42, 53, .08);
+  background: transparent;
+  text-align: left;
+}
+.mechat-session:hover {
+  background: rgba(214, 173, 109, .12);
+}
+.mechat-session.is-locked {
+  color: #8c9699;
+}
+.mechat-session-avatar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #172a35;
+  color: #f0e4cf;
+  font-size: 15px;
+}
+.mechat-session.is-locked .mechat-session-avatar {
+  background: #d9d3c6;
+  color: #6f797c;
+}
+.mechat-session-name {
+  font-size: 14px;
+}
+.mechat-chat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #f7f3ea;
+}
+.mechat-chat-head {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(23, 42, 53, .1);
+  background: rgba(255, 255, 255, .5);
+  font-weight: 700;
+  font-size: 15px;
+}
+.mechat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px;
+}
+.mechat-empty {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #98a1a3;
+  font-size: 14px;
+}
+.mechat-row {
+  display: flex;
+  margin: 0 0 16px;
+}
+.mechat-row.is-mine {
+  justify-content: flex-end;
+}
+.mechat-bubble {
+  max-width: 72%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid rgba(23, 42, 53, .1);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.mechat-row.is-mine .mechat-bubble {
+  background: #aee8a3;
+  border-color: rgba(76, 160, 75, .25);
+}
+.mechat-file,
+.mechat-music,
+.mechat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  max-width: 78%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid rgba(23, 42, 53, .1);
+  text-align: left;
+}
+.mechat-row.is-mine .mechat-file,
+.mechat-row.is-mine .mechat-music,
+.mechat-row.is-mine .mechat-link {
+  background: #aee8a3;
+  border-color: rgba(76, 160, 75, .25);
+}
+.mechat-file-mark,
+.mechat-music-mark,
+.mechat-link-mark {
+  font-size: 24px;
+}
+.mechat-file strong,
+.mechat-music strong,
+.mechat-link {
+  font-size: 14px;
+  color: #1b2730;
+}
+.mechat-file small,
+.mechat-music small {
+  display: block;
+  color: #7c8789;
+  font-size: 12px;
+  margin-top: 3px;
+}
+.mechat-music-title {
+  display: block;
+  color: #2a7a2d;
+  font-size: 13px;
+  margin-top: 3px;
+}
+.mechat-link {
+  cursor: pointer;
+}
+.mechat-link.is-disabled {
+  color: #98a1a3;
+}
+.mechat-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(120, 0, 0, .82);
+  color: #fff;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-align: center;
+  animation: mechatFlash .16s ease both;
+}
+@keyframes mechatFlash {
+  from { opacity: 0; transform: scale(1.05); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 620px) {
+  .mechat-layout {
+    grid-template-columns: 150px 1fr;
+  }
+  .mechat-session-name {
+    font-size: 12px;
+  }
+}
