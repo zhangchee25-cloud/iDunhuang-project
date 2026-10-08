@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
-import { gameStore } from '../stores/gameStore'
-import MeChatPage from './MeChatPage'
-import TMailPage from './TMailPage'
-import QingXiaoDaPage from './QingXiaoDaPage'
-import '../styles/desktop.css'
+import { useEffect, useRef, useState } from "react"
+import { gameStore } from "../stores/gameStore"
+import MeChatPage from "./MeChatPage"
+import TMailPage from "./TMailPage"
+import QingXiaoDaPage from "./QingXiaoDaPage"
+import SafeBoxPage from "./SafeBoxPage"
+import DiskPage from "./DiskPage"
+import "../styles/desktop.css"
 
-type AppId = 'mechat' | 'tmail' | 'qingxiaoda' | 'notepad'
+type AppId = "mechat" | "tmail" | "qingxiaoda" | "notepad"
 
 type WindowMeta = {
   id: AppId
@@ -16,10 +18,10 @@ type WindowMeta = {
 }
 
 const APPS: { id: AppId; name: string; icon: string }[] = [
-  { id: 'mechat', name: 'MeChat', icon: '💬' },
-  { id: 'tmail', name: 'TMail', icon: '✉️' },
-  { id: 'qingxiaoda', name: '青小搭', icon: '🐸' },
-  { id: 'notepad', name: '记事本', icon: '📝' },
+  { id: "mechat", name: "MeChat", icon: "💬" },
+  { id: "tmail", name: "TMail", icon: "✉️" },
+  { id: "qingxiaoda", name: "青小搭", icon: "🐸" },
+  { id: "notepad", name: "记事本", icon: "📝" },
 ]
 
 const WINDOW_SIZE: Record<AppId, { width: number; height: number }> = {
@@ -34,16 +36,29 @@ const clamp = (value: number, min: number, max: number) => Math.min(Math.max(val
 export default function DesktopPage({ onBack }: { onBack: () => void }) {
   const [windows, setWindows] = useState<WindowMeta[]>([])
   const [activeId, setActiveId] = useState<AppId | null>(null)
-  const [note, setNote] = useState('')
+  const [note, setNote] = useState("")
   const [mechatOpen, setMechatOpen] = useState(false)
   const [tmailOpen, setTmailOpen] = useState(false)
   const [qingxiaodaOpen, setQingXiaoDaOpen] = useState(false)
+  const [safeBoxOpen, setSafeBoxOpen] = useState(false)
+  const [diskOpen, setDiskOpen] = useState(false)
   const zCounter = useRef(10)
   const dragRef = useRef<{ id: AppId; offsetX: number; offsetY: number } | null>(null)
   const desktopRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setNote(gameStore.get().noteContent)
+  }, [])
+
+  useEffect(() => {
+    const onHash = () => {
+      const hash = window.location.hash
+      if (hash === "#safeBox") setSafeBoxOpen(true)
+      if (hash === "#disk") setDiskOpen(true)
+    }
+    onHash()
+    window.addEventListener("hashchange", onHash)
+    return () => window.removeEventListener("hashchange", onHash)
   }, [])
 
   useEffect(() => {
@@ -56,11 +71,11 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
       setWindows((list) => list.map((win) => (win.id === drag.id ? { ...win, x, y } : win)))
     }
     const up = () => { dragRef.current = null }
-    window.addEventListener('mousemove', move)
-    window.addEventListener('mouseup', up)
+    window.addEventListener("mousemove", move)
+    window.addEventListener("mouseup", up)
     return () => {
-      window.removeEventListener('mousemove', move)
-      window.removeEventListener('mouseup', up)
+      window.removeEventListener("mousemove", move)
+      window.removeEventListener("mouseup", up)
     }
   }, [])
 
@@ -95,10 +110,21 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
     gameStore.set({ noteContent: value })
   }
 
+  const closeSafeBox = () => {
+    setSafeBoxOpen(false)
+    if (window.location.hash === "#safeBox") window.location.hash = ""
+  }
+
+  const closeDisk = () => {
+    setDiskOpen(false)
+    if (window.location.hash === "#disk") window.location.hash = ""
+  }
+
+  // safeBox/disk from MeChat hash navigation take priority over app views
+  if (safeBoxOpen) return <SafeBoxPage onBack={closeSafeBox} />
+  if (diskOpen) return <DiskPage onBack={closeDisk} />
   if (mechatOpen) return <MeChatPage onBack={() => setMechatOpen(false)} />
-
   if (tmailOpen) return <TMailPage onBack={() => setTmailOpen(false)} />
-
   if (qingxiaodaOpen) return <QingXiaoDaPage onBack={() => setQingXiaoDaOpen(false)} />
 
   return (
@@ -112,7 +138,7 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
         {APPS.map((app) => (
           <button
             key={app.id}
-            className={`desktop-icon ${activeId === app.id ? 'is-active' : ''}`}
+            className={`desktop-icon ${activeId === app.id ? "is-active" : ""}`}
             type="button"
             onClick={() => setActiveId(app.id)}
             onDoubleClick={() => openApp(app.id)}
@@ -129,14 +155,14 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
         return (
           <section
             key={win.id}
-            className={`desktop-window ${win.minimized ? 'is-minimized' : ''} ${activeId === win.id ? 'is-active' : ''}`}
+            className={`desktop-window ${win.minimized ? "is-minimized" : ""} ${activeId === win.id ? "is-active" : ""}`}
             style={{ left: win.x, top: win.y, width: size.width, height: size.height, zIndex: win.z }}
             onMouseDown={() => bringToFront(win.id)}
           >
             <header
               className="desktop-window-bar"
               onMouseDown={(event) => {
-                if ((event.target as HTMLElement).closest('button')) return
+                if ((event.target as HTMLElement).closest("button")) return
                 dragRef.current = { id: win.id, offsetX: event.clientX - win.x, offsetY: event.clientY - win.y }
               }}
             >
@@ -147,13 +173,13 @@ export default function DesktopPage({ onBack }: { onBack: () => void }) {
               </span>
             </header>
             <div className="desktop-window-body">
-              {win.id === 'mechat' ? (
+              {win.id === "mechat" ? (
                 <button className="desktop-app-entry" type="button" onClick={() => setMechatOpen(true)}>打开 MeChat</button>
-              ) : win.id === 'tmail' ? (
+              ) : win.id === "tmail" ? (
                 <button className="desktop-app-entry" type="button" onClick={() => setTmailOpen(true)}>打开 TMail</button>
-              ) : win.id === 'qingxiaoda' ? (
+              ) : win.id === "qingxiaoda" ? (
                 <button className="desktop-app-entry" type="button" onClick={() => setQingXiaoDaOpen(true)}>打开 青小搭</button>
-              ) : win.id === 'notepad' ? (
+              ) : win.id === "notepad" ? (
                 <textarea
                   className="desktop-notepad"
                   value={note}

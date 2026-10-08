@@ -1,46 +1,48 @@
-import { useEffect, useState } from 'react'
-import { PUZZLE_ANSWER } from '../data/puzzleAnswer'
-import { MAIL_DATA } from '../data/mailData'
-import { GAME_TEXT } from '../data/gameText'
-import { gameStore } from '../stores/gameStore'
-import SearchPage from './SearchPage'
-import './tmail.css'
+import { useEffect, useState } from "react"
+import { PUZZLE_ANSWER } from "../data/puzzleAnswer"
+import { MAIL_DATA } from "../data/mailData"
+import { GAME_TEXT } from "../data/gameText"
+import { gameStore } from "../stores/gameStore"
+import SearchPage from "./SearchPage"
+import "./tmail.css"
 
-type MailId = 'mail1' | 'mail2' | 'mail3'
+const TM_LOGIN_KEY = "puzzle_tmail_loggedin"
+
+type MailId = "mail1" | "mail2" | "mail3"
 
 const META: Record<MailId, { subject: string; from: string; content: string }> = MAIL_DATA
 
 export default function TMailPage({ onBack }: { onBack: () => void }) {
-  const [account, setAccount] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loggedIn, setLoggedIn] = useState(() => gameStore.get().hasMail2)
+  const [account, setAccount] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loggedIn, setLoggedIn] = useState(() => localStorage.getItem(TM_LOGIN_KEY) === "1")
   const [activeMail, setActiveMail] = useState<MailId | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [flash, setFlash] = useState('')
+  const [flash, setFlash] = useState("")
   const [mailVersion, setMailVersion] = useState(0)
 
   const state = gameStore.get()
 
-  const unlockedMails: MailId[] = ['mail1']
-  if (state.hasMail2) unlockedMails.push('mail2')
-  if (state.hasMail3) unlockedMails.push('mail3')
+  const unlockedMails: MailId[] = ["mail1"]
+  if (state.hasMail2) unlockedMails.push("mail2")
+  if (state.hasMail3) unlockedMails.push("mail3")
 
   useEffect(() => {
     const handle = () => setMailVersion((value) => value + 1)
-    window.addEventListener('puzzle-mail-refresh', handle)
-    return () => window.removeEventListener('puzzle-mail-refresh', handle)
+    window.addEventListener("puzzle-mail-refresh", handle)
+    return () => window.removeEventListener("puzzle-mail-refresh", handle)
   }, [])
 
   void mailVersion
 
   const login = () => {
     if (account.trim().toLowerCase() === PUZZLE_ANSWER.wuliuMailAccount.toLowerCase() && password === PUZZLE_ANSWER.wuliuMailPwd) {
-      setError('')
-      gameStore.set({ hasMail2: true })
+      setError("")
+      localStorage.setItem(TM_LOGIN_KEY, "1")
       setLoggedIn(true)
     } else {
-      setError('账号或密码错误')
+      setError("账号或密码错误")
     }
   }
 
@@ -64,7 +66,7 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
 
   const showFlash = (text: string) => {
     setFlash(text)
-    window.setTimeout(() => setFlash(''), 1800)
+    window.setTimeout(() => setFlash(""), 1800)
   }
 
   if (!loggedIn) {
@@ -107,13 +109,13 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
       <header className="tmail-topbar">
         <button className="tmail-back" type="button" onClick={onBack}>← 桌面</button>
         <span className="tmail-title">TMail · 收件箱</span>
-        <button className="tmail-logout" type="button" onClick={() => setLoggedIn(false)}>退出</button>
+        <button className="tmail-logout" type="button" onClick={() => { localStorage.removeItem(TM_LOGIN_KEY); setLoggedIn(false) }}>退出</button>
       </header>
       <div className="tmail-layout">
         <aside className="tmail-inbox">
           <div className="tmail-inbox-title">收件箱</div>
           {unlockedMails.map((id) => (
-            <button key={id} type="button" className={`tmail-mail-item ${activeMail === id ? 'is-active' : ''}`} onClick={() => openMail(id)}>
+            <button key={id} type="button" className={`tmail-mail-item ${activeMail === id ? "is-active" : ""}`} onClick={() => openMail(id)}>
               <span className="tmail-mail-dot" aria-hidden="true" />
               <span className="tmail-mail-main">
                 <strong>{META[id].from}</strong>
@@ -129,14 +131,14 @@ export default function TMailPage({ onBack }: { onBack: () => void }) {
                 <h2>{active.subject}</h2>
                 <span>发件人：{active.from}</span>
               </div>
-              <div className="tmail-mail-body" dangerouslySetInnerHTML={{ __html: active.content.replace(/\n/g, '<br />') }} />
-              {activeMail === 'mail1' && (
+              <div className="tmail-mail-body" dangerouslySetInnerHTML={{ __html: active.content.replace(/\n/g, "<br />") }} />
+              {activeMail === "mail1" && (
                 <button className="tmail-search-link" type="button" onClick={openSearch}>检索页面 ↗</button>
               )}
-              {activeMail === 'mail3' && (
+              {activeMail === "mail3" && (
                 <button className="tmail-attachment" type="button" aria-label="附件">
                   <span className="tmail-attachment-mark" aria-hidden="true">📎</span>
-                  <span>IDunhuang_attachment.docx</span>
+                  <span>{"Youdon'tneedtounderstandFrenchatall.docx"}</span>
                 </button>
               )}
             </article>

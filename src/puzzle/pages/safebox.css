@@ -1,0 +1,110 @@
+.safebox-page {
+  position: fixed;
+  inset: 0;
+  z-index: 93;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #1b2730;
+  background: #0d1c27;
+}
+.safebox-topbar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  background: #172a35;
+  color: #eef2f4;
+}
+.safebox-title {
+  margin: 0 auto;
+  font-size: 15px;
+  letter-spacing: .06em;
+}
+.safebox-back {
+  border: 0;
+  background: transparent;
+  color: #d6ad6d;
+  font-size: 13px;
+}
+.safebox-shell {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.safebox {
+  width: min(420px, 100%);
+  padding: 34px 30px;
+  border: 1px solid rgba(214, 173, 109, .4);
+  background: #13252f;
+  color: #eef2f4;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  text-align: center;
+}
+.safebox-dial {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #d6ad6d;
+  border-radius: 50%;
+  color: #d6ad6d;
+  font-size: 32px;
+}
+.safebox h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+.safebox-desc {
+  margin: 0 0 18px;
+  color: #aab4b8;
+  font-size: 13px;
+}
+.safebox-progress {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+.safebox-progress i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+}
+.safebox-progress i.is-filled {
+  background: #d6ad6d;
+}
+.safebox input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 12px 13px;
+  border: 1px solid #c8d0d4;
+  border-radius: 4px;
+  outline: none;
+  background: #f7f8f9;
+}
+.safebox button {
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  background: #d6ad6d;
+  color: #172633;
+  font-size: 14px;
+}
+.safebox-error {
+  color: #ff8f7c;
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+.safebox-success {
+  margin-top: 20px;
+  padding: 18px;
+  background: #a4553d;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+}

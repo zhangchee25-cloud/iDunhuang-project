@@ -1,27 +1,27 @@
-import { useState } from 'react'
-import { MECHAT_SESSIONS, type ChatMessage } from '../data/chatData'
-import { GAME_TEXT } from '../data/gameText'
-import { gameStore } from '../stores/gameStore'
-import './mechat.css'
+import { useState } from "react"
+import { MECHAT_SESSIONS, type ChatMessage } from "../data/chatData"
+import { GAME_TEXT } from "../data/gameText"
+import { gameStore } from "../stores/gameStore"
+import "./mechat.css"
 
 const FILE_NAME_OVERRIDES: Record<string, string> = {
-  '《大物作业2》': '大物作业2',
-  '《电电学习秘诀》': 'glgg的随手推秘诀',
+  "《大物作业2》": "大物作业2",
+  "《电电学习秘诀》": "glgg的随手推秘诀",
 }
 
-const isPinduoduoLink = (message: ChatMessage) => message.type === 'link' && message.linkUrl === '#safeBox'
+const isPinduoduoLink = (message: ChatMessage) => message.type === "link" && message.linkUrl === "#safeBox"
 
 function Message({ message, onSafeLink }: { message: ChatMessage; onSafeLink: () => void }) {
-  const mine = message.sender === '我'
+  const mine = message.sender === "我"
   const disabledSafe = isPinduoduoLink(message) && !gameStore.get().canOpenSafeLink
 
   const clickSafeLink = () => {
-    if (!disabledSafe) onSafeLink()
+    onSafeLink()
   }
 
-  if (message.type === 'music') {
+  if (message.type === "music") {
     return (
-      <div className={`mechat-row ${mine ? 'is-mine' : ''}`}>
+      <div className={`mechat-row ${mine ? "is-mine" : ""}`}>
         <div className="mechat-music">
           <span className="mechat-music-mark" aria-hidden="true">♪</span>
           <span>
@@ -34,9 +34,9 @@ function Message({ message, onSafeLink }: { message: ChatMessage; onSafeLink: ()
     )
   }
 
-  if (message.type === 'pdfShare') {
+  if (message.type === "pdfShare") {
     return (
-      <div className={`mechat-row ${mine ? 'is-mine' : ''}`}>
+      <div className={`mechat-row ${mine ? "is-mine" : ""}`}>
         <div className="mechat-file">
           <span className="mechat-file-mark" aria-hidden="true">📄</span>
           <span>
@@ -48,13 +48,13 @@ function Message({ message, onSafeLink }: { message: ChatMessage; onSafeLink: ()
     )
   }
 
-  if (message.type === 'link') {
+  if (message.type === "link") {
     return (
-      <div className={`mechat-row ${mine ? 'is-mine' : ''}`}>
+      <div className={`mechat-row ${mine ? "is-mine" : ""}`}>
         <button
           type="button"
-          className={`mechat-link ${disabledSafe ? 'is-disabled' : ''}`}
-          onClick={isPinduoduoLink(message) ? clickSafeLink : undefined}
+          className={`mechat-link ${disabledSafe ? "is-disabled" : ""}`}
+          onClick={isPinduoduoLink(message) ? clickSafeLink : message.linkUrl === "#disk" ? () => { window.location.hash = "disk" } : undefined}
         >
           <span className="mechat-link-mark" aria-hidden="true">🔗</span>
           <span>{message.content}</span>
@@ -64,7 +64,7 @@ function Message({ message, onSafeLink }: { message: ChatMessage; onSafeLink: ()
   }
 
   return (
-    <div className={`mechat-row ${mine ? 'is-mine' : ''}`}>
+    <div className={`mechat-row ${mine ? "is-mine" : ""}`}>
       <div className="mechat-bubble">{message.content}</div>
     </div>
   )
@@ -87,7 +87,7 @@ export default function MeChatPage({ onBack }: { onBack: () => void }) {
 
   const clickSafeLink = () => {
     if (gameStore.get().canOpenSafeLink) {
-      window.location.hash = 'safeBox'
+      window.location.hash = "safeBox"
     } else {
       setFlash(true)
       window.setTimeout(() => setFlash(false), 1600)
