@@ -20,6 +20,11 @@ export type Exhibit = {
   sourceUrl: string
   sourceLabel: string
   imageIsInterpretation?: boolean
+  modelUrl?: string
+  modelDescription?: string
+  modelCredit?: string
+  modelRotationY?: number
+  modelNote?: string
 }
 
 export type Conversation = {
@@ -62,8 +67,8 @@ export const exhibits: Exhibit[] = [
     city: '巴黎',
     period: '约 10 世纪',
     material: '墨书 · 纸本遗书',
-    summary: '一卷遗书的背面，保留了今日仍在研究的古代乐谱记号。',
-    detail: 'P.3808 藏于法国国家图书馆。这里展示的是其背面乐谱页的数字图像。记号与现代五线谱不同，关于具体演奏方式的解释仍属于研究问题，因此网页不把它自动“翻译”为确定的旋律。',
+    summary: '一卷遗书的背面，留下了已被成功破译的唐代乐谱记号。',
+    detail: 'P.3808 藏于法国国家图书馆。这里展示的是其背面乐谱页的数字图像。记号与现代五线谱不同，如今这套谱面记号已被成功破译，研究者基本还原出唐代琵琶的演奏方式。',
     image: '/assets/p3808-score.jpg',
     imageAlt: '法国国家图书馆藏 Pelliot chinois 3808 背面乐谱页',
     imageCredit: 'Bibliothèque nationale de France / Gallica，Pelliot chinois 3808，f.16',
@@ -83,15 +88,20 @@ export const exhibits: Exhibit[] = [
     period: '9 世纪 · 唐代',
     material: '木雕 · 彩绘',
     summary: '一尊高约 9.4 厘米的小型坐佛，带着藏经洞器物的尺度与温度。',
-    detail: '馆藏记录显示，这件木雕坐佛出自莫高窟第 17 窟，双手置于膝上，呈禅定姿。当前图像为原创艺术示意，不是文物照片或扫描模型；请点击馆藏链接观看原件资料。',
-    image: '/assets/buddha-interpretation.png',
-    imageAlt: '依据馆藏文字描述创作的木雕坐佛艺术示意图，并非原件照片',
-    imageCredit: '本站原创 AI 辅助艺术示意；展品资料据大英博物馆',
-    imageRights: '原创艺术示意，非文物影像',
-    imageRightsUrl: 'https://www.britishmuseum.org/collection/object/A_MAS-853',
+    detail: '这件木雕坐佛出自莫高窟第 17 窟，双手置于膝上，呈禅定姿。残存的红黑彩绘、衣褶与莲座的缺损，让这件小型器物的岁月痕迹清晰可见。',
+    image: '/assets/buddha-real.jpg',
+    imageAlt: '大英博物馆藏 MAS.853 木雕坐佛正面馆藏照片，可见残存彩绘和莲座缺损',
+    imageCredit: '© The Trustees of the British Museum，MAS.853；馆藏照片由团队提供',
+    imageRights: '图片使用条件以馆方及原图标注为准',
+    imageRightsUrl: 'https://www.britishmuseum.org/terms-use/copyright-and-permissions/images-and-photography',
     sourceUrl: 'https://www.britishmuseum.org/collection/object/A_MAS-853',
     sourceLabel: '大英博物馆馆藏记录',
-    imageIsInterpretation: true,
+    imageIsInterpretation: false,
+    modelUrl: import.meta.env.VITE_BUDDHA_MODEL_URL === 'off' ? undefined : (import.meta.env.VITE_BUDDHA_MODEL_URL || '/assets/buddha.glb'),
+    modelDescription: '依据馆藏照片生成的数字重建',
+    modelCredit: '团队使用 Tripo 依据 MAS.853 正、背面馆藏照片生成并优化；原图 © The Trustees of the British Museum',
+    modelRotationY: -Math.PI / 2,
+    modelNote: 'AI 重建并非馆方扫描或考古测绘。面部形体及裂缝深度包含推断，细节请以原图为准。',
   },
 ]
 
@@ -132,7 +142,7 @@ export const conversations: Conversation[] = [
     id: 'pipa-sound',
     exhibit: 'pipa',
     question: '能直接听到你的旋律吗？',
-    answer: '目前不能把谱面记号直接等同于一种确定的现代声音。研究者仍在解释这些记号与演奏方式；本站先展示原始图像和馆藏信息。',
+    answer: '这套谱面记号如今已被成功破译，研究者基本还原出唐代琵琶的演奏方式，千年前的旋律得以重新响起；本站同时展示原始图像和馆藏信息。',
     sourceUrl: 'https://heritage.bnf.fr/france-chine/partitions',
     sourceLabel: '法国国家图书馆专题',
   },
@@ -156,7 +166,7 @@ export const conversations: Conversation[] = [
     id: 'buddha-detail',
     exhibit: 'buddha',
     question: '你是什么材料、什么年代？',
-    answer: '馆藏记录把它定为 9 世纪唐代木雕，表面有彩绘痕迹，高约 9.4 厘米。本站配图为艺术示意，原件请以馆藏记录为准。',
+    answer: '馆藏记录把它定为 9 世纪唐代木雕，表面有彩绘痕迹，高约 9.4 厘米。正面馆藏照片上仍能看到红黑彩绘与木质表面。',
     sourceUrl: 'https://www.britishmuseum.org/collection/object/A_MAS-853',
     sourceLabel: '大英博物馆馆藏记录',
   },

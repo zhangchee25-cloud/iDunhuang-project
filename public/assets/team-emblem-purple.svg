@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <title>iD 飘带 · 队旗紫色版</title>
+  <desc>源自队旗手写 iD 与飞天飘带的原创支队标识，适用于浅色背景。</desc>
+  <circle cx="48" cy="48" r="43" stroke="#710a81" stroke-width="1.25"/>
+  <path d="M14 64C7 48 17 27 36 18C22 31 15 43 18 56C19 62 23 65 26 66C21 67 16 67 14 64Z" fill="#710a81" opacity=".5"/>
+  <path d="M78 24C92 44 80 70 60 80C76 66 83 50 78 36C77 32 74 29 71 27C75 28 77 26 78 24Z" fill="#710a81" opacity=".5"/>
+  <g stroke="#710a81" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M44 30C47 20 67 17 75 26C90 45 64 74 43 74C29 74 23 68 27 64C31 60 37 65 43 70" stroke-width="4"/>
+    <path d="M60 24C57 37 48 57 37 72" stroke-width="5.2"/>
+    <path d="M28 45C26 50 20 61 23 64C26 67 32 61 35 58" stroke-width="3.8"/>
+    <path d="M31 36L33 33" stroke-width="4.6"/>
+  </g>
+  <path d="M44 85H52" stroke="#710a81" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

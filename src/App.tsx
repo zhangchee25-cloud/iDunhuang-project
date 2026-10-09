@@ -1,9 +1,11 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
-import { byId, conversations, exhibits, type ExhibitId } from './data'
+import { lazy, Suspense, useEffect, useRef, useState, type RefObject } from 'react'
+import { byId, conversations, type ExhibitId } from './data'
 import { Entrance } from './Homepage'
+import { BuddhaViewer } from './BuddhaViewer'
 import { PuzzleIntro } from './puzzle/components/PuzzleIntro'
 import DesktopPage from './puzzle/pages/DesktopPage'
 import EndingPage from './puzzle/pages/EndingPage'
+import './journey.css'
 
 const ScrollScene = lazy(() => import('./ScrollScene').then((module) => ({ default: module.ScrollScene })))
 
@@ -55,243 +57,208 @@ function Reader({ dialogRef }: { dialogRef: RefObject<HTMLDialogElement | null> 
   )
 }
 
-function ExhibitCard({ id, onDialogue }: { id: ExhibitId; onDialogue: (id: ExhibitId) => void }) {
-  const item = byId[id]
-  return (
-    <article className={`exhibit-card exhibit-${id}`} id={`exhibit-${id}`}>
-      <div className="exhibit-visual">
-        <img src={item.image} alt={item.imageAlt} loading="lazy" />
-        <span className="visual-index">{item.index} / {item.city}</span>
-        {item.imageIsInterpretation && <span className="visual-caveat">艺术示意 · 非原件照片</span>}
-      </div>
-      <div className="exhibit-copy">
-        <div className="card-overline"><span>{item.city}</span><span>{item.shelfmark}</span></div>
-        <h3>{item.name}</h3>
-        <p className="latin-name">{item.english}</p>
-        <p className="exhibit-summary">{item.summary}</p>
-        <p className="exhibit-detail">{item.detail}</p>
-        <div className="exhibit-facts"><span>{item.period}</span><span>{item.material}</span><span>{item.institution}</span></div>
-        <div className="card-actions">
-          <button type="button" onClick={() => onDialogue(id)}>与它对话 <span aria-hidden="true">↗</span></button>
-          <a href={item.sourceUrl} target="_blank" rel="noreferrer">馆藏原页 ↗</a>
-        </div>
-      </div>
-    </article>
-  )
+
+const navigation = [
+  { id: 'top', label: '序章' },
+  { id: 'journey', label: '敦煌' },
+  { id: 'collection', label: '伦敦' },
+  { id: 'paris', label: '巴黎' },
+  { id: 'sources', label: '来源' },
+]
+const exhibitOrder: ExhibitId[] = ['diamond', 'buddha', 'pipa']
+const exhibitHeadings = {
+  diamond: { number: '01', kind: '卷 / 遗书', line: '纸上，留下千年。' },
+  buddha: { number: '02', kind: '像 / 器物', line: '静默中，自有万象。' },
+  pipa: { number: '03', kind: '声 / 音乐', line: '无声处，仍有回响。' },
 }
 
-function ConversationSection({ selected, onSelect }: { selected: ExhibitId; onSelect: (id: ExhibitId) => void }) {
-  const questions = useMemo(() => conversations.filter((item) => item.exhibit === selected), [selected])
-  const [activeIds, setActiveIds] = useState<Record<ExhibitId, string>>({
-    diamond: 'diamond-date',
-    pipa: 'pipa-location',
-    buddha: 'buddha-origin',
-  })
-  const active = questions.find((item) => item.id === activeIds[selected]) ?? questions[0]
+function JourneyNavigation({ onOpenPuzzle }: { onOpenPuzzle: () => void }) {
+  const [active, setActive] = useState('top')
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      let current = 'top'
+      for (const entry of navigation) {
+        if ((document.getElementById(entry.id)?.getBoundingClientRect().top ?? Infinity) <= window.innerHeight * .4) current = entry.id
+      }
+      setActive(current)
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+  }, [])
+  return <header className="dh-header">
+    <a className="dh-brand" href="#top" aria-label="敦煌有信，回到序章"><img className="dh-emblem" src="/assets/team-emblem.svg" alt="iD 飘带支队队徽" width="44" height="44" /><span>敦煌有信<small>iDUNHUANG</small></span></a>
+    <nav aria-label="展览路线">{navigation.map((entry) => <a key={entry.id} href={'#' + entry.id} aria-current={active === entry.id ? 'location' : undefined}>{entry.label}</a>)}</nav>
+    <div className="dh-header-actions">
+      <span className="journey-edition">数字文化遗产 · 2026</span>
+      <button className="dh-puzzle-entry" type="button" onClick={onOpenPuzzle} aria-label="微信新消息，进入网页解密">
+        <span className="dh-puzzle-dot" aria-hidden="true" />
+        微信新消息
+        <span className="dh-puzzle-badge" aria-hidden="true">1</span>
+      </button>
+    </div>
+  </header>
+}
 
-  return (
-    <section className="dialogue-section" id="dialogue" aria-labelledby="dialogue-title">
-      <div className="dialogue-inner page-width">
-        <div className="section-kicker light">04 / 策展式对话</div>
-        <div className="dialogue-head">
-          <div>
-            <h2 id="dialogue-title">如果文物会回答</h2>
-            <p>从馆藏资料出发，选一个问题，听它讲述可查证的故事。</p>
-          </div>
-          <span className="dialogue-ornament" aria-hidden="true">“</span>
-        </div>
-        <div className="dialogue-layout">
-          <div className="dialogue-selector">
-            <span className="small-label">选择展品</span>
-            <div className="artifact-options">
-              {exhibits.map((item) => (
-                <button type="button" key={item.id} className={selected === item.id ? 'selected' : ''} aria-pressed={selected === item.id} onClick={() => onSelect(item.id)}>
-                  <span>{item.index}</span><strong>{item.name}</strong><small>{item.city}</small>
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="dialogue-card">
-            <div className="answer-topline"><span>与 {byId[selected].name} 对话</span><span>馆藏资料整理</span></div>
-            <div className="question-list" aria-label="可提的问题">
-              {questions.map((item) => (
-                <button type="button" key={item.id} className={active.id === item.id ? 'selected' : ''} aria-pressed={active.id === item.id} onClick={() => setActiveIds((previous) => ({ ...previous, [selected]: item.id }))}>
-                  {item.question}
-                </button>
-              ))}
-            </div>
-            <div className="answer-box" aria-live="polite">
-              <span className="answer-mark">答 /</span>
-              <p>{active.answer}</p>
-              <a href={active.sourceUrl} target="_blank" rel="noreferrer">查证来源 · {active.sourceLabel} ↗</a>
-            </div>
-            <div className="dialogue-boundary">这里展示的是经核对的固定问答。若有更多疑问，请打开 <a href={byId[selected].sourceUrl} target="_blank" rel="noreferrer">馆藏原页</a> 继续探索。</div>
-          </div>
+function ExhibitQuestions({ id }: { id: ExhibitId }) {
+  const questions = conversations.filter((entry) => entry.exhibit === id)
+  const [activeId, setActiveId] = useState(questions[0]?.id)
+  const active = questions.find((entry) => entry.id === activeId) ?? questions[0]
+  if (!active) return null
+  return <section className="artifact-dialogue" id={id === 'diamond' ? 'dialogue' : 'dialogue-' + id} aria-labelledby={'questions-title-' + id}>
+    <div className="artifact-dialogue-heading"><span>问 / 答</span><h4 id={'questions-title-' + id}>与{byId[id].name}对话</h4><small>馆藏资料整理</small></div>
+    <div className="artifact-questions" aria-label={byId[id].name + '的可选问题'}>
+      {questions.map((entry) => <button type="button" key={entry.id} aria-pressed={active.id === entry.id} onClick={() => setActiveId(entry.id)}>{entry.question}</button>)}
+    </div>
+    <div className="artifact-answer" aria-live="polite"><p>{active.answer}</p><a href={active.sourceUrl} target="_blank" rel="noreferrer">查证来源 · {active.sourceLabel} ↗</a></div>
+    <p className="artifact-dialogue-note">从已核对的馆藏资料出发，更多问题可沿来源继续探索。</p>
+  </section>
+}
+
+function Artifact({ id, onOpenReader }: { id: ExhibitId; onOpenReader?: () => void }) {
+  const item = byId[id]
+  const heading = exhibitHeadings[id]
+  return <article className={'journey-artifact artifact-' + id} id={'exhibit-' + id} aria-labelledby={'artifact-title-' + id}>
+    <div className="artifact-topline"><span>{heading.number} / {heading.kind}</span><span>{item.institution} · {item.shelfmark}</span></div>
+    <div className="artifact-layout">
+      <div className={'artifact-media media-' + id}>
+        {id === 'diamond' ? <div className="scroll-display">
+          <Suspense fallback={<img className="scroll-placeholder" src={item.image} alt={item.imageAlt} />}>
+            <ScrollScene onOpenReader={onOpenReader!} />
+          </Suspense>
+        </div> : id === 'buddha' ? <BuddhaViewer /> : <figure className="score-image"><img src={item.image} alt={item.imageAlt} loading="lazy" /><figcaption>Pelliot chinois 3808 · f.16 / 背面乐谱页</figcaption></figure>}
+      </div>
+      <div className="artifact-copy">
+        <span className="artifact-type">{item.city} / {heading.kind}</span>
+        <h3 id={'artifact-title-' + id}>{item.name}</h3>
+        <p className="artifact-english">{item.english}</p>
+        <p className="artifact-poem">{heading.line}</p>
+        <p className="artifact-summary">{item.summary}</p>
+        <p className="artifact-detail">{item.detail}</p>
+        <dl className="artifact-facts"><div><dt>年代</dt><dd>{item.period}</dd></div><div><dt>材质</dt><dd>{item.material}</dd></div><div><dt>馆藏编号</dt><dd>{item.shelfmark}</dd></div></dl>
+        <div className="artifact-actions">
+          {id === 'diamond' && <button type="button" onClick={onOpenReader}>展开经卷 <span aria-hidden="true">↗</span></button>}
+          <a href={item.sourceUrl} target="_blank" rel="noreferrer">查看馆藏记录 ↗</a>
         </div>
       </div>
-    </section>
-  )
+    </div>
+    <ExhibitQuestions id={id} />
+  </article>
 }
 
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const [selectedExhibit, setSelectedExhibit] = useState<ExhibitId>('diamond')
-  const [entered, setEntered] = useState(() => window.location.hash.length > 1)
-  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro' | 'desktop' | 'ending'>('idle')
+  const [puzzleStage, setPuzzleStage] = useState<'idle' | 'intro' | 'desktop' | 'ending'>(() => {
+    const hash = window.location.hash
+    if (hash === '#ending') return 'ending'
+    if (hash === '#puzzle') return 'intro'
+    return 'idle'
+  })
 
   useEffect(() => {
     const onHash = () => {
       const hash = window.location.hash
-      if (hash === '#ending') {
-        setPuzzleStage('ending')
-        window.scrollTo({ top: 0, behavior: 'instant' })
-      }
-      if (hash === '#puzzle') {
-        setPuzzleStage('intro')
-        window.scrollTo({ top: 0, behavior: 'instant' })
-      }
+      if (hash === '#ending') setPuzzleStage('ending')
+      else if (hash === '#puzzle') setPuzzleStage('intro')
     }
     onHash()
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
-  const enterExhibition = (target = 'top') => {
-    setEntered(true)
-    window.requestAnimationFrame(() => {
-      const destination = document.getElementById(target)
-      if (target === 'top') window.scrollTo({ top: 0, behavior: 'instant' })
-      else destination?.scrollIntoView({ behavior: 'instant', block: 'start' })
-      if (destination) {
-        destination.setAttribute('tabindex', '-1')
-        destination.focus({ preventScroll: true })
-      }
-    })
-  }
-
-  const openDialogue = (id: ExhibitId) => {
-    setSelectedExhibit(id)
-    document.getElementById('dialogue')?.scrollIntoView({ behavior: 'smooth' })
-  }
+  useEffect(() => {
+    let frame = 0
+    const visitHash = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        let id = ''
+        try { id = decodeURIComponent(window.location.hash.slice(1)) } catch { return }
+        if (!id) return
+        const target = document.getElementById(id)
+        target?.scrollIntoView({ behavior: 'instant', block: 'start' })
+        target?.focus({ preventScroll: true })
+      })
+    }
+    visitHash()
+    return () => cancelAnimationFrame(frame)
+  }, [])
 
   const openPuzzle = () => {
     setPuzzleStage('intro')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
+  const closePuzzle = () => {
+    setPuzzleStage('idle')
+    if (window.location.hash === '#puzzle' || window.location.hash === '#ending') window.location.hash = ''
+  }
+
   if (puzzleStage === 'intro') return <PuzzleIntro onEnter={() => setPuzzleStage('desktop')} />
 
-  if (puzzleStage === 'desktop') return <DesktopPage onBack={() => setPuzzleStage('idle')} />
+  if (puzzleStage === 'desktop') return <DesktopPage onBack={closePuzzle} />
 
-  if (puzzleStage === 'ending') return <EndingPage onHome={() => setPuzzleStage('idle')} />
+  if (puzzleStage === 'ending') return <EndingPage onHome={closePuzzle} />
 
-  if (!entered) return <Entrance onEnter={enterExhibition} />
-
-  return (
-    <>
-      <header className="site-header">
-        <div className="page-width header-inner">
-          <a className="brand" href="#top" aria-label="敦煌有信，返回顶部"><span className="brand-mark">敦</span><span>敦煌有信<small>iDUNHUANG</small></span></a>
-          <nav aria-label="主导航">
-            <a href="#journey">数字旅程</a>
-            <a href="#collection">三件展品</a>
-            <a href="#dialogue">与文物对话</a>
-            <a href="#sources">资料来源</a>
-          </nav>
-          <div className="header-actions">
-            <span className="header-edition">数字文化遗产 · 2026</span>
-            <button className="header-wechat" type="button" onClick={openPuzzle}>
-              <span className="header-wechat-dot" aria-hidden="true" />
-              微信新消息
-              <span className="header-wechat-badge" aria-hidden="true">1</span>
-            </button>
-          </div>
+  return <div className="dh-home journey-site">
+    <a className="skip-link" href="#journey">跳过序章，开始数字旅程</a>
+    <JourneyNavigation onOpenPuzzle={openPuzzle} />
+    <main>
+      <Entrance />
+      <section className="city-origin" id="journey" tabIndex={-1} aria-labelledby="dunhuang-title">
+        <div className="journey-width">
+          <div className="city-intro"><span className="city-number">01 / DUNHUANG</span><div><p className="city-label">敦煌 · 莫高窟第 17 窟</p><h2 id="dunhuang-title">故事的起点，<br /><em>在敦煌。</em></h2></div></div>
+          <div className="origin-copy"><p>从一卷经文、一页乐谱到一尊坐佛，藏经洞让我们得以走近敦煌的文字、声音与信仰。今天，它们分藏于不同机构，数字图像和馆藏记录为我们提供了重新观看的入口。</p><p>这次数字旅程从敦煌出发，先走近伦敦，再来到巴黎。三座城市连接的是本展览的阅读顺序；每件文物的流转与现藏信息，都以各自的馆藏记录为线索。</p></div>
+          <ol className="city-route" aria-label="本展览阅读路线">
+            <li><a href="#journey"><small>起点 / 01</small><strong>敦煌</strong><span>共同的文化源头</span></a></li>
+            <li><a href="#collection"><small>馆藏 / 02</small><strong>伦敦</strong><span>英国图书馆 · 大英博物馆</span></a></li>
+            <li><a href="#paris"><small>馆藏 / 03</small><strong>巴黎</strong><span>法国国家图书馆</span></a></li>
+          </ol>
+          <a className="chapter-next" href="#collection">下一站 · 伦敦 <span aria-hidden="true">↓</span></a>
         </div>
-      </header>
+      </section>
 
-      <main id="top" tabIndex={-1}>
-        <section className="hero">
-          <div className="hero-grain" aria-hidden="true" />
-          <div className="page-width hero-grid">
-            <div className="hero-copy">
-              <span className="hero-eyebrow"><i /> FROM DUNHUANG TO THE WORLD</span>
-              <h1>纵横欧亚，<br /><em>寻脉敦煌。</em></h1>
-              <div className="hero-rule" />
-              <p>一卷经文、一页乐谱、一尊木雕。沿着敦煌、伦敦与巴黎之间的线索，重新走近文物与遗书。</p>
-              <div className="hero-actions">
-                <a className="primary-link" href="#collection">走近展品 <span aria-hidden="true">↗</span></a>
-                <a className="quiet-link" href="#journey">查看数字旅程 <span aria-hidden="true">↓</span></a>
-              </div>
-              <div className="hero-footnote"><span>01 / 03</span><span>敦煌文物与遗书数字展</span></div>
-            </div>
-            <div className="hero-art">
-              <div className="art-topline"><span>馆藏聚焦 / OR.8210/P.2</span><span>3D 数字展示</span></div>
-              <Suspense fallback={<div className="scene-loading">正在展开卷轴…</div>}>
-                <ScrollScene onOpenReader={() => dialogRef.current?.showModal()} />
-              </Suspense>
-            </div>
-          </div>
-          <div className="hero-bottomline page-width"><span>丝路遗珍 · 数字相逢</span><span>向下继续探索 <span aria-hidden="true">↓</span></span></div>
-        </section>
-
-        <section className="journey-section" id="journey" aria-labelledby="journey-title">
-          <div className="page-width">
-            <div className="section-kicker">01 / 跨越山海</div>
-            <div className="section-heading"><h2 id="journey-title">从敦煌出发，<br />在数字空间重逢。</h2><p>这些文物现藏于不同机构。数字化让我们能够并置观看它们，也让每一件展品的来源与现状更加清晰。</p></div>
-            <div className="route" aria-label="敦煌、伦敦、巴黎三地路线">
-              <div className="route-line" aria-hidden="true" />
-              <div className="route-stop origin"><span className="route-dot" /><span className="route-number">01</span><strong>敦煌</strong><small>莫高窟 · 第 17 窟</small></div>
-              <div className="route-stop"><span className="route-dot" /><span className="route-number">02</span><strong>伦敦</strong><small>《金刚经》 / 木雕坐佛</small></div>
-              <div className="route-stop"><span className="route-dot" /><span className="route-number">03</span><strong>巴黎</strong><small>敦煌琵琶谱 P.3808</small></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="collection-section" id="collection" aria-labelledby="collection-title">
-          <div className="page-width">
-            <div className="section-kicker">02 / 馆藏精选</div>
-            <div className="collection-heading"><h2 id="collection-title">三件展品，<br />三种观看方式。</h2><p>图像、文字与可交互模型相互补充。每一件展品都标明馆藏编号，方便回到原始资料。</p></div>
-            <div className="collection-list">
-              <ExhibitCard id="diamond" onDialogue={openDialogue} />
-              <ExhibitCard id="pipa" onDialogue={openDialogue} />
-              <ExhibitCard id="buddha" onDialogue={openDialogue} />
-            </div>
-          </div>
-        </section>
-
-        <section className="bridge-section" aria-labelledby="bridge-title">
-          <div className="page-width bridge-inner">
-            <span className="section-kicker">03 / 数字化的意义</span>
-            <h2 id="bridge-title">看得见的细节，<br /><em>才有继续追问的可能。</em></h2>
-            <p>高分辨率图像让纸张、笔迹与雕版线条得以被反复观察；清楚的馆藏记录，让一次浏览成为进一步研究的起点。</p>
-            <a href="#dialogue">向展品提问 <span aria-hidden="true">↗</span></a>
-          </div>
-        </section>
-
-        <ConversationSection selected={selectedExhibit} onSelect={setSelectedExhibit} />
-      </main>
-
-      <footer className="site-footer" id="sources">
-        <div className="page-width">
-          <div className="footer-top"><div><span className="footer-brand">敦煌有信</span><p>聚焦海外敦煌文物与遗书的数字化传播。<br />为支队宣传展示制作的非商业教育演示。</p></div><a href="#top">回到顶部 ↑</a></div>
-          <div className="footer-columns">
-            <div><h3>馆藏与资料</h3>{exhibits.map((item) => <a key={item.id} href={item.sourceUrl} target="_blank" rel="noreferrer">{item.institution} · {item.shelfmark} ↗</a>)}</div>
-            <div><h3>图像与使用说明</h3>{exhibits.map((item) => <p key={item.id}><strong>{item.name}</strong>：{item.imageCredit}。<a href={item.imageRightsUrl} target="_blank" rel="noreferrer">{item.imageRights} ↗</a></p>)}</div>
-          </div>
-          <div className="footer-bottom"><span>iDUNHUANG · 2026</span><span>文物信息以原收藏机构最新记录为准。</span></div>
+      <section className="city-collection city-london" id="collection" tabIndex={-1} aria-labelledby="london-title">
+        <div className="journey-width">
+          <div className="city-intro"><span className="city-number">02 / LONDON</span><div><p className="city-label">伦敦 · 两处馆藏，两种凝视</p><h2 id="london-title">纸上的千年，<br /><em>木上的时间。</em></h2></div><p className="city-description">在英国图书馆读一卷经文，<br />在大英博物馆看一尊坐佛。<br />从文字的线条，走向器物的肌理。</p></div>
+          <Artifact id="diamond" onOpenReader={() => dialogRef.current?.showModal()} />
+          <Artifact id="buddha" />
+          <a className="chapter-next" href="#paris">下一站 · 巴黎 <span aria-hidden="true">↓</span></a>
         </div>
-      </footer>
+      </section>
 
-      <Reader dialogRef={dialogRef} />
-    </>
-  )
+      <section className="city-collection city-paris" id="paris" tabIndex={-1} aria-labelledby="paris-title">
+        <div className="journey-width">
+          <div className="city-intro"><span className="city-number">03 / PARIS</span><div><p className="city-label">巴黎 · 法国国家图书馆</p><h2 id="paris-title">无声的纸页，<br /><em>留住声音的线索。</em></h2></div><p className="city-description">文字之外，还有关于音乐的记忆。<br />在遗书背面，<br />一页乐谱等待新的阅读。</p></div>
+          <Artifact id="pipa" />
+        </div>
+      </section>
+
+      <section className="journey-bridge" aria-labelledby="bridge-title">
+        <div className="journey-width"><p className="dh-overline">DIGITAL REUNION / 数字相逢</p><h2 id="bridge-title">散藏于远方，<br /><em>重逢于眼前。</em></h2><p>数字图像让纸张、笔迹与雕刻细节被反复观看；清楚的馆藏记录，让一次凝视成为继续追问的起点。沿着来源，我们也能继续理解文物与遗书的保存、研究和数字化。</p><a className="chapter-next" href="#sources">沿着来源，继续探索 <span aria-hidden="true">↓</span></a></div>
+      </section>
+    </main>
+
+    <footer className="journey-sources" id="sources" tabIndex={-1}>
+      <div className="journey-width">
+        <div className="sources-heading"><div><p className="dh-overline">SOURCES & CREDITS</p><h2>每一次观看，<br />都有来处。</h2></div><p>聚焦海外敦煌文物与遗书的数字化传播。<br />为支队宣传制作的非商业教育展示。</p></div>
+        <div className="sources-list">{exhibitOrder.map((id) => {
+          const item = byId[id]
+          return <div key={id}><h3>{item.name}</h3><a href={item.sourceUrl} target="_blank" rel="noreferrer">{item.institution} · {item.shelfmark} ↗</a><p>{item.imageCredit}</p><a className="rights-link" href={item.imageRightsUrl} target="_blank" rel="noreferrer">{item.imageRights} ↗</a>{item.modelUrl && <p>{item.modelDescription}。{item.modelCredit}</p>}</div>
+        })}</div>
+        <p className="sources-note">3D 卷轴用于解释形制；{byId.buddha.modelUrl ? '坐佛数字重建依据馆藏照片制作。' : '坐佛当前展示馆藏照片。'}诗性文案为展览创作，文物资料以收藏机构记录为准。</p>
+        <div className="sources-bottom"><span>敦煌有信 · iDUNHUANG · 2026</span><a href="#top">回到序章 ↑</a></div>
+      </div>
+    </footer>
+    <Reader dialogRef={dialogRef} />
+  </div>
 }
 
 export default App
-
-
-
-
-
-
-

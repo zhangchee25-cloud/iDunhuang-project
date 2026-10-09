@@ -3,23 +3,19 @@
 .dh-home button:focus-visible, .dh-home a:focus-visible { outline: 2px solid #bc985c; outline-offset: 7px; }
 .dh-header { height: 94px; padding: 0 5vw; position: fixed; top: 0; left: 0; right: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d5b98a25; background: #080b0be8; backdrop-filter: blur(12px); }
 .dh-brand { padding: 0; border: 0; background: none; display: flex; gap: 13px; align-items: center; text-align: left; font: 20px var(--dh-serif) !important; letter-spacing: .1em; }
-.dh-seal { width: 40px; height: 46px; border: 1px solid #ad754f; color: #c69669; display: grid; place-items: center; font-size: 25px; }
+.dh-emblem { width: 44px; height: 44px; flex-shrink: 0; object-fit: contain; }
 .dh-brand small { display: block; margin-top: 7px; font: 9px Georgia, serif; letter-spacing: .32em; color: #b4a48b; }
 .dh-header nav { display: flex; gap: 38px; margin-left: auto; margin-right: 5vw; }
-.dh-header nav button, .dh-nav-enter { background: none; border: 0; padding: 10px 0; font-size: 12px; letter-spacing: .12em; }
 .dh-header nav button { color: #c2baab; }
-.dh-nav-enter { color: #dfc599 !important; }
-.dh-nav-enter span { margin-left: 16px; }
 .dh-sequence { height: 320svh; min-height: 620px; }
-.dh-stage { --p: 0; --camera: 0; position: sticky; top: 0; height: 100svh; min-height: 620px; overflow: hidden; isolation: isolate; background: #080b0b; }
+.dh-stage { --p: 0; --camera: 0; --reveal: .04; --hero-shade: .6528; position: sticky; top: 0; height: 100svh; min-height: 620px; overflow: hidden; isolation: isolate; background: #080b0b; }
 .dh-light { position: absolute; z-index: -5; inset: 0; background: radial-gradient(ellipse at 76% 38%, #50402a, #19201b 35%, #080b0b 70%); opacity: calc(.12 + var(--camera) * .55); }
-.dh-buddha { position: absolute; z-index: -3; max-width: none; height: 97%; bottom: -1.5%; left: calc(51% + var(--camera) * 24%); width: auto; transform-origin: 50% 25%; transform: translateX(-50%) scale(calc(5.4 - var(--camera) * 4.4)); mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 87%, transparent); will-change: transform; }
+.dh-artwork { position: absolute; inset: 0; z-index: -3; opacity: var(--reveal); pointer-events: none; mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 87%, transparent); }
+.dh-buddha { position: absolute; max-width: none; height: 97%; bottom: -1.5%; left: calc(51% + var(--camera) * 24%); width: auto; transform-origin: 50% 25%; transform: translateX(-50%) scale(calc(5.4 - var(--camera) * 4.4)); will-change: transform; }
+.dh-reveal-shade { position: absolute; z-index: -2; inset: 0; background: #080b0b; opacity: var(--hero-shade); pointer-events: none; }
 .dh-paper { position: absolute; inset: 8% auto 5% -1%; width: 60%; z-index: -4; opacity: clamp(0, calc((var(--p) - .54) * 1), .42); mask-image: linear-gradient(90deg, transparent, #000 16%, #000 78%, transparent); transform: translateX(calc((1 - var(--camera)) * -55px)); }
 .dh-paper img { height: 100%; width: 100%; object-fit: cover; filter: contrast(1.16) brightness(1.12) saturate(.8); }
 .dh-vignette { position: absolute; z-index: -1; inset: 0; background: linear-gradient(0deg, #080b0b, transparent 28%, transparent 76%, #080b0bab), linear-gradient(90deg, #080b0b7d, transparent 75%); }
-.dh-camera-film { position: absolute; inset: 0; z-index: -2; height: 100%; width: 100%; object-fit: cover; opacity: 0; }
-.dh-has-film .dh-camera-film { opacity: 1; }
-.dh-has-film .dh-buddha, .dh-has-film .dh-paper { visibility: hidden; }
 .dh-opening { position: absolute; inset: 36% 5vw auto; text-align: center; opacity: clamp(0, calc(1 - var(--p) * 5), 1); transform: translateY(calc(var(--p) * -90px)); }
 .dh-overline { margin: 0; color: var(--dh-gold); font: 10px/1.7 Georgia, "Microsoft YaHei", serif; letter-spacing: .3em; }
 .dh-opening h1 { margin: 30px 0 22px; font: 400 clamp(72px, 8.3vw, 132px)/1.3 var(--dh-serif); letter-spacing: .04em; text-shadow: 0 3px 32px #000a; }
@@ -54,65 +50,22 @@
 .dh-image-note { max-width: 160px; color: #827f70; font-size: 9px; text-align: right; line-height: 1.8; }
 .dh-edge-progress { position: absolute; top: 39%; right: 21px; width: 1px; height: 96px; background: #b5a17b38; }
 .dh-edge-progress i { display: block; width: 1px; height: calc(var(--p) * 100%); background: #dbc18d; }
-.dh-gallery { background: #eee7d9; color: #282b25; padding: 110px 7.5vw 0; scroll-margin-top: 94px; }
-.dh-gallery-heading { display: flex; justify-content: space-between; gap: 50px; align-items: flex-end; margin-bottom: 74px; }
-.dh-gallery .dh-overline { color: #927347; font-size: 9px; }
-.dh-gallery-heading h2 { margin: 28px 0 0; font: 400 clamp(44px, 4.5vw, 70px)/1.35 var(--dh-serif); letter-spacing: .04em; }
-.dh-gallery-heading h2 em { font-style: normal; color: #8b6941; }
-.dh-gallery-heading > p { color: #757466; font-size: 13px; line-height: 2.2; padding-bottom: 4px; }
-.dh-gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
-.dh-artifact-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 0 0 17px; border-bottom: 1px solid #a499812b; color: #81765f; font: 10px Georgia, "Microsoft YaHei", serif; }
-.dh-artifact-top > span:first-child { font-size: 21px; }
-.dh-artifact-image { position: relative; display: block; width: 100%; height: 340px; overflow: hidden; padding: 0; border: 0; background: #ddd2ba; margin-top: 24px; }
-.dh-artifact-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
-.dh-artifact-image:hover img { transform: scale(1.045); }
-.dh-artifact-image > span { position: absolute; right: 18px; bottom: 12px; color: #fff4daba; font: 62px var(--dh-serif); text-shadow: 0 1px 20px #4737204d; }
-.dh-artifact-pipa .dh-artifact-image { margin-top: 64px; height: 300px; }
-.dh-artifact-pipa .dh-artifact-image img { object-position: 50% 38%; }
-.dh-artifact-buddha .dh-artifact-image { background: #0c1111; }
-.dh-artifact-buddha .dh-artifact-image img { object-fit: contain; }
-.dh-artifact-name { margin: 27px 0 14px; color: #92744f; font-size: 11px; letter-spacing: .16em; }
-.dh-artifact h3 { margin: 0 0 16px; font: 400 clamp(22px, 2vw, 29px)/1.5 var(--dh-serif); }
-.dh-artifact-copy { margin: 0; color: #777366; font-size: 12px; line-height: 2; max-width: 280px; min-height: 50px; }
-.dh-artifact-link { display: flex; justify-content: space-between; width: 100%; margin-top: 28px; padding: 17px 0; border: 0; border-bottom: 1px solid #a499814d; background: none; text-align: left; font-size: 12px !important; letter-spacing: .1em; }
-.dh-gallery-end { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 75px 0 68px; margin-top: 36px; border-top: 1px solid #a4998138; }
-.dh-gallery-end > span { color: #7a725e; font: 20px/1.7 var(--dh-serif); letter-spacing: .13em; }
-.dh-gallery-end > button { border: 0; background: none; padding: 12px 0; font-size: 12px; color: #745a35; }
-.dh-gallery-end > button span { margin-left: 22px; }
-.dh-footer { display: flex; align-items: center; justify-content: space-between; gap: 25px; padding: 50px 7.5vw; color: #8e8b7e; }
-.dh-footer strong { display: block; color: #c6b99c; font: 21px var(--dh-serif); letter-spacing: .12em; }
-.dh-footer div span { display: block; margin-top: 9px; font: 8px Georgia, serif; letter-spacing: .22em; }
-.dh-footer p { margin: 0; font-size: 11px; line-height: 1.9; }
-.dh-footer button { border: 0; background: none; padding: 12px 0; font-size: 11px; }
-.dh-about { max-width: 650px; width: calc(100% - 36px); padding: 0; border: 1px solid #b295605e; background: #eee7d9; color: #33372e; max-height: 86svh; }
-.dh-about::backdrop { background: #030606c9; }
-.dh-about > div { padding: 45px; position: relative; }
-.dh-about-close { position: absolute; right: 18px; top: 12px; border: 0; background: none; padding: 5px 10px; font-size: 28px !important; }
-.dh-about .dh-overline { color: #947a51; font-size: 9px; }
-.dh-about h2 { font: 30px var(--dh-serif); margin: 22px 0; }
-.dh-about p:not(.dh-overline) { font-size: 13px; line-height: 1.9; color: #6a6b5c; }
-.dh-about a { text-underline-offset: 4px; }
 @media (max-width: 1000px) {
   .dh-header nav { gap: 24px; margin-right: 4vw; }
   .dh-arrival { width: 62%; left: 6vw; }
   .dh-arrival-actions { gap: 18px; }
   .dh-arrival h2 { font-size: 9vw; }
-  .dh-gallery { padding-inline: 5vw; }
-  .dh-gallery-grid { gap: 24px; }
-  .dh-artifact-image { height: 280px; }
-  .dh-artifact-pipa .dh-artifact-image { height: 240px; }
 }
 @media (max-width: 680px) {
   .dh-header { height: 80px; padding: 0 6vw; }
   .dh-brand { font-size: 16px !important; gap: 10px; }
-  .dh-seal { height: 36px; width: 31px; font-size: 21px; }
+  .dh-emblem { height: 32px; width: 32px; }
   .dh-brand small { font-size: 7px; margin-top: 5px; }
   .dh-header nav { display: none; }
-  .dh-nav-enter { font-size: 10px !important; }
-  .dh-nav-enter span { margin-left: 7px; }
   .dh-stage { min-height: 560px; }
   .dh-sequence { height: 300svh; min-height: 560px; }
-  .dh-buddha { height: 77%; bottom: 10%; left: calc(50% + var(--camera) * 15%); opacity: calc(1 - var(--p) * .4); }
+  .dh-artwork { opacity: calc(var(--reveal) * (1 - var(--p) * .4)); }
+  .dh-buddha { height: calc(77% - var(--camera) * 18%); bottom: calc(10% + var(--camera) * 10%); left: calc(50% + var(--camera) * 5%); }
   .dh-paper { width: 90%; opacity: clamp(0, calc((var(--p) - .54) * .6), .27); }
   .dh-vignette { background: linear-gradient(0deg, #080b0b, transparent 65%, #080b0b80), linear-gradient(90deg, #080b0b50, transparent); }
   .dh-opening { top: 39%; inset-inline: 6vw; }
@@ -137,26 +90,9 @@
   .dh-scroll-cue { font-size: 8px !important; padding: 12px 0; }
   .dh-scroll-cue span { margin-left: 8px; font-size: 13px; }
   .dh-image-note { max-width: none; text-align: left; width: 100%; font-size: 8px; }
-  .dh-gallery { padding: 70px 7vw 0; scroll-margin-top: 80px; }
-  .dh-gallery-heading { display: block; margin-bottom: 40px; }
-  .dh-gallery-heading h2 { font-size: 44px; margin-top: 20px; }
-  .dh-gallery-heading > p { font-size: 12px; margin-top: 28px; }
-  .dh-gallery-grid { display: block; }
-  .dh-artifact { margin-bottom: 50px; }
-  .dh-artifact-image, .dh-artifact-pipa .dh-artifact-image { height: 360px; margin-top: 20px; }
-  .dh-artifact h3 { font-size: 27px; }
-  .dh-artifact-copy { max-width: none; min-height: 0; }
-  .dh-artifact-link { margin-top: 16px; }
-  .dh-gallery-end { padding: 35px 0 40px; display: block; margin-top: 0; }
-  .dh-gallery-end > span { font-size: 17px; }
-  .dh-gallery-end > button { display: block; margin-top: 20px; }
-  .dh-footer { display: grid; grid-template-columns: 1fr 1fr; padding: 40px 7vw; gap: 28px 16px; }
-  .dh-footer button { text-align: left; }
-  .dh-about > div { padding: 40px 25px 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .dh-stage { --p: 1; --camera: 1; --reveal: 1; --hero-shade: 0; }
   .dh-sequence { height: 100svh; }
   .dh-buddha { will-change: auto; }
-  .dh-artifact-image img { transition: none; }
-  .dh-artifact-image:hover img { transform: none; }
 }
